@@ -61,9 +61,6 @@ angular
           onReset: '&',
           onSelectAll: '&',
           onSelectNone: '&',
-          onScrollBottom: '&',
-          onBeginFiltering: '&',
-          onEndFiltering: '&',
 
           // i18n
           translation: '='
@@ -139,8 +136,6 @@ angular
               return false;
             }
 
-            $scope.onBeginFiltering();
-
             for (i = $scope.inputModel.length - 1; i >= 0; i--) {
               // if it's group end, we push it to filteredModel[];
               if (
@@ -214,8 +209,6 @@ angular
             }
 
             $scope.filteredModel.reverse();
-
-            $scope.onEndFiltering();
 
             $timeout(function() {
               $scope.getFormElements();
@@ -1126,17 +1119,6 @@ angular
                 'style',
                 'height:' + attrs.maxHeight + '; overflow-y:scroll;'
               );
-
-            layer.onscroll = function(event) {
-              const target = event.target;
-
-              if (
-                target.scrollHeight * 0.8 <=
-                target.scrollTop + target.clientHeight
-              ) {
-                $scope.onScrollBottom();
-              }
-            };
           }
 
           // some flags for easier checking
