@@ -168,6 +168,7 @@ angular
                       gotData = true;
                       break;
                     }
+                  }
                 }
                 // if there's no search-key attribute, we use this one. Much better on performance.
                 else {
