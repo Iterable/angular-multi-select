@@ -1339,7 +1339,7 @@ angular
         '</div> ' +
         // selection items
         '<div class="checkBoxContainer">' +
-        '<div vs-repeat>' +
+        '<div vs-repeat style="height: 50vh; overflow: auto;">' +
         '<div ng-repeat="item in filteredModel | filter:removeGroupEndMarker">' +
         '<div ' +
         'class="multiSelectItem"' +
