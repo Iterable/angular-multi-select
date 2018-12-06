@@ -691,12 +691,18 @@ angular
                 if (tempMaxLabels > 0) {
                   $scope.varButtonLabel += ', ... ';
                 }
-                $scope.varButtonLabel +=
-                  'Showing ' +
-                  $scope.outputModel.length +
-                  ' ' +
-                  (attrs.itemNames ? attrs.itemNames : 'metric') +
-                  ($scope.outputModel.length === 1 ? '' : 's');
+                if (attrs.itemNames) {
+                  $scope.varButtonLabel = `${$scope.outputModel.length} ${
+                    attrs.itemNames
+                  }${$scope.outputModel.length === 1 ? '' : 's'} selected`;
+                } else {
+                  $scope.varButtonLabel +=
+                    'Showing ' +
+                    $scope.outputModel.length +
+                    ' ' +
+                    'metric' +
+                    ($scope.outputModel.length === 1 ? '' : 's');
+                }
               }
             }
             $scope.varButtonLabel = $sce.trustAsHtml(
