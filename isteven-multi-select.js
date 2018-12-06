@@ -692,7 +692,7 @@ angular
                   $scope.varButtonLabel += ', ... ';
                 }
                 if (attrs.itemNames) {
-                  $scope.varButtonLabel =
+                  $scope.varButtonLabel +=
                     $scope.outputModel.length +
                     ' ' +
                     attrs.itemNames +
