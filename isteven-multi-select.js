@@ -692,9 +692,12 @@ angular
                   $scope.varButtonLabel += ', ... ';
                 }
                 if (attrs.itemNames) {
-                  $scope.varButtonLabel = `${$scope.outputModel.length} ${
-                    attrs.itemNames
-                  }${$scope.outputModel.length === 1 ? '' : 's'} selected`;
+                  $scope.varButtonLabel =
+                    $scope.outputModel.length +
+                    ' ' +
+                    attrs.itemNames +
+                    ($scope.outputModel.length === 1 ? '' : 's') +
+                    ' selected';
                 } else {
                   $scope.varButtonLabel +=
                     'Showing ' +
