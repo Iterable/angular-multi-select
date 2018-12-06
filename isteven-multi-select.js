@@ -1,3 +1,4 @@
+import 'angular-vs-repeat';
 /*
  * Angular JS Multi Select
  * Creates a dropdown-like button with checkboxes.
@@ -31,10 +32,10 @@
  * --------------------------------------------------------------------------------
  */
 
-'use strict';
+('use strict');
 
 angular
-  .module('isteven-multi-select', ['ng'])
+  .module('isteven-multi-select', ['ng', 'vs-repeat'])
   .directive('istevenMultiSelect', [
     '$sce',
     '$timeout',
@@ -691,7 +692,11 @@ angular
                   $scope.varButtonLabel += ', ... ';
                 }
                 $scope.varButtonLabel +=
-                  'Showing ' + $scope.outputModel.length + ' metrics';
+                  'Showing ' +
+                  $scope.outputModel.length +
+                  ' ' +
+                  (attrs.itemNames ? attrs.itemNames : 'metric') +
+                  ($scope.outputModel.length === 1 ? '' : 's');
               }
             }
             $scope.varButtonLabel = $sce.trustAsHtml(
@@ -1227,6 +1232,18 @@ angular
             }
           });
 
+          // track length changes of the input model for added options
+          $scope.$watch('inputModel.length', function(newVal) {
+            if (newVal) {
+              $scope.backUp = angular.copy($scope.inputModel);
+              $scope.updateFilter();
+              $scope.prepareGrouping();
+              $scope.prepareIndex();
+              $scope.refreshOutputModel();
+              $scope.refreshButton();
+            }
+          });
+
           // watch for changes in directive state (disabled or enabled)
           $scope.$watch('isDisabled', function(newVal) {
             $scope.isDisabled = newVal;
@@ -1300,7 +1317,7 @@ angular
         // textfield
         '<input placeholder="{{lang.search}}" type="text"' +
         'ng-click="select( \'filter\', $event )" ' +
-        'ng-model="inputLabel.labelFilter" ' +
+        'ng-model="inputLabel.labelFilter" ng-model-options="{ debounce: 500 }"' +
         'ng-change="searchChanged()" class="inputFilter"' +
         '/>' +
         // clear button
@@ -1309,8 +1326,10 @@ angular
         '</div> ' +
         // selection items
         '<div class="checkBoxContainer">' +
+        '<div vs-repeat style="height: 50vh; overflow: auto;">' +
+        '<div ng-repeat="item in filteredModel | filter:removeGroupEndMarker">' +
         '<div ' +
-        'ng-repeat="item in filteredModel | filter:removeGroupEndMarker" class="multiSelectItem"' +
+        'class="multiSelectItem"' +
         'ng-class="{selected: item[ tickProperty ], horizontal: orientationH, vertical: orientationV, multiSelectGroup:item[ groupProperty ], disabled:itemIsDisabled( item )}"' +
         'ng-click="syncItems( item, $event, $index );" ' +
         'ng-mouseleave="removeFocusStyle( tabIndex );"> ' +
@@ -1333,6 +1352,9 @@ angular
         '</div>' +
         // the tick/check mark
         '<span class="tickMark" ng-if="item[ groupProperty ] !== true && item[ tickProperty ] === true" ng-bind-html="icon.tickMark"></span>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
         '</div>' +
         '</div>' +
         '</div>' +
