@@ -35,7 +35,8 @@ import 'angular-vs-repeat';
 ('use strict');
 
 /* angular.copy performance is terrible on large arrays and objects,
- * parse and stringify JSON are native code functions
+ * parse and stringify JSON are native code functions which are way faster
+ * as long as what you're parsing are basic JSON data types
  */
 function fastCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
