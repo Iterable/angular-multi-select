@@ -34,6 +34,13 @@ import 'angular-vs-repeat';
 
 ('use strict');
 
+/* angular.copy performance is terrible on large arrays and objects,
+ * parse and stringify JSON are native code functions
+ */
+function fastCopy(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 angular
   .module('isteven-multi-select', ['ng', 'vs-repeat'])
   .directive('istevenMultiSelect', [
@@ -225,7 +232,7 @@ angular
                 angular.forEach($scope.filteredModel, function(value, key) {
                   if (typeof value !== 'undefined') {
                     if (typeof value[attrs.groupProperty] === 'undefined') {
-                      var tempObj = angular.copy(value);
+                      var tempObj = fastCopy(value);
                       var index = filterObj.push(tempObj);
                       delete filterObj[index - 1][$scope.indexProperty];
                       delete filterObj[index - 1][$scope.spacingProperty];
@@ -570,7 +577,7 @@ angular
             }
 
             // we execute the callback function here
-            clickedItem = angular.copy(item);
+            clickedItem = fastCopy(item);
             if (clickedItem !== null) {
               $timeout(function() {
                 delete clickedItem[$scope.indexProperty];
@@ -636,7 +643,7 @@ angular
                   typeof value[attrs.groupProperty] === 'undefined' &&
                   value[$scope.tickProperty] === true
                 ) {
-                  var temp = angular.copy(value);
+                  var temp = fastCopy(value);
                   var index = $scope.outputModel.push(temp);
                   delete $scope.outputModel[index - 1][$scope.indexProperty];
                   delete $scope.outputModel[index - 1][$scope.spacingProperty];
@@ -1208,22 +1215,21 @@ angular
           // watch1, for changes in input model property
           // updates multi-select when user select/deselect a single checkbox programatically
           // https://github.com/isteven/angular-multi-select/issues/8
-          $scope.$watch(
+          $scope.$watchCollection(
             'inputModel',
             function(newVal) {
               if (newVal) {
                 $scope.refreshOutputModel();
                 $scope.refreshButton();
               }
-            },
-            true
+            }
           );
 
           // watch2 for changes in input model as a whole
           // this on updates the multi-select when a user load a whole new input-model. We also update the $scope.backUp variable
           $scope.$watch('inputModel', function(newVal) {
             if (newVal) {
-              $scope.backUp = angular.copy($scope.inputModel);
+              $scope.backUp = fastCopy($scope.inputModel);
               $scope.updateFilter();
               $scope.prepareGrouping();
               $scope.prepareIndex();
@@ -1235,7 +1241,7 @@ angular
           // track length changes of the input model for added options
           $scope.$watch('inputModel.length', function(newVal) {
             if (newVal) {
-              $scope.backUp = angular.copy($scope.inputModel);
+              $scope.backUp = fastCopy($scope.inputModel);
               $scope.updateFilter();
               $scope.prepareGrouping();
               $scope.prepareIndex();
